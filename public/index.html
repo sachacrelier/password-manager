@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="title-bar">
+        <div class="title-bar-title">Password Manager</div>
+        <div class="window-controls">
+            <button class="window-control-btn close" id="close-btn"></button>
+            <button class="window-control-btn minimize" id="minimize-btn"></button>
+            <button class="window-control-btn maximize" id="maximize-btn"></button>
+        </div>
+    </div>
+
+    <div id="welcome-screen" class="welcome-screen">
+        <div class="welcome-content">
+            <span class="welcome-icon">🔐</span>
+            <h1>Password Manager</h1>
+            <p>Gérez tous vos mots de passe de manière sécurisée et moderne. Stockage local, chiffrement fort, interface
+                intuitive.</p>
+            <button id="continue-btn" class="continue-btn">Continuer</button>
+        </div>
+    </div>
+
+    <div id="main-app" class="main-app">
+        <div class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>Mes Mots de Passe</h1>
+                    <p>Gérez vos identifiants en toute sécurité</p>
+                </div>
+                <div class="header-right">
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div id="total-passwords" class="stat-number">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-item">
+                            <div id="categories-count" class="stat-number">0</div>
+                            <div class="stat-label">Catégories</div>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button id="theme-toggle" class="btn-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                            </svg>
+                        </button>
+                        <button id="add-password-btn" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Ajouter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="sidebar">
+                <div class="search-box">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" id="search-input" class="search-input" placeholder="Rechercher...">
+                </div>
+
+                <div class="categories">
+                    <h3>Catégories</h3>
+                    <button id="add-category-btn" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Ajouter
+                    </button>
+                    <hr class="separator">
+                    <div id="categories-list"></div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div id="passwords-grid" class="passwords-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="password-modal" class="modal">
+        <div id="modal-overlay" class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title" class="modal-title">Ajouter un mot de passe</h2>
+                <button id="modal-close" class="modal-close">&times;</button>
+            </div>
+
+            <form id="password-form">
+                <div class="form-group">
+                    <label class="form-label">Service / Site web *</label>
+                    <input type="text" id="service-input" class="form-control" placeholder="Gmail, Discord, Facebook..."
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nom d'utilisateur / Email</label>
+                    <input type="text" id="username-input" class="form-control" placeholder="votre@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Mot de passe *</label>
+                    <input type="password" id="password-input" class="form-control" required>
+                    <div class="password-generator">
+                        <button type="button" id="generate-password" class="generate-btn">Générer</button>
+                        <div id="password-strength" class="password-strength">
+                            <div class="strength-indicator"></div>
+                            <span class="strength-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <select id="category-select" class="form-control">
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description (optionnel)</label>
+                    <textarea id="description-input" class="form-control" rows="3"
+                        placeholder="Notes supplémentaires..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="passwordManager.hidePasswordModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20,6 9,17 4,12"></polyline>
+                        </svg>
+                        Sauvegarder
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="category-modal" class="modal">
+        <div id="category-modal-overlay" class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="category-modal-title" class="modal-title">Nouvelle Catégorie</h2>
+                <button id="category-modal-close" class="modal-close">&times;</button>
+            </div>
+            <form id="category-form">
+                <div class="form-group">
+                    <label class="form-label">Nom de la catégorie *</label>
+                    <input type="text" id="category-name" class="form-control"
+                        placeholder="Ex: Gaming, Réseaux sociaux..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Icône (émoji)</label>
+                    <input type="text" id="category-emoji" class="form-control" placeholder="🎮" maxlength="2">
+                    <small style="color: var(--text-muted); font-size: 12px; margin-top: 4px; display: block;">Utilisez
+                        un émoji pour représenter votre catégorie</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="passwordManager.hideCategoryModal()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="20,6 9,17 4,12"></polyline>
+                        </svg>
+                        Sauvegarder
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
